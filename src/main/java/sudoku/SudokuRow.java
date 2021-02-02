@@ -10,7 +10,7 @@ public class SudokuRow {
     }
 
     public List<SudokuElement> getEmptyRow(){
-        for (int i =0; i<9; i++){
+        for (int i =0; i<Solver.LAST_INDEX; i++){
             sudokuRows.add(new SudokuElement(SudokuElement.EMPTY));
         }
         return new ArrayList<>(sudokuRows);

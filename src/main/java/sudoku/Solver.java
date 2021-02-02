@@ -1,10 +1,20 @@
 package sudoku;
 
+import java.util.List;
+import java.util.Random;
+import java.util.stream.IntStream;
+
+import static java.util.stream.Collectors.toList;
+
 public class Solver {
+    private final static int FIRST_VALUE = 1;
+    private final static int LAST_VALUE = 10;
+    public final static int LAST_INDEX = 9;
+    private final static int UNIT_INDEX = 3;
     private final SudokuBoard backtrackSudokuBoard;
 
-    public Solver(SudokuBoard sudokuBoard) throws CloneNotSupportedException {
-        this.backtrackSudokuBoard = sudokuBoard.deepCopy();
+    public Solver(SudokuBoard sudokuBoard){
+        this.backtrackSudokuBoard = sudokuBoard;
     }
 
     public SudokuBoard solve() throws CloneNotSupportedException{
@@ -15,8 +25,8 @@ public class Solver {
     }
 
     private boolean solveBoard(){
-        for (int i =0; i<9; i++){
-            for (int j=0; j<9; j++){
+        for (int i =0; i<LAST_INDEX; i++){
+            for (int j=0; j<LAST_INDEX; j++){
                 if(emptyField(i,j)){
                     return solveField(i,j);
                 }
@@ -30,7 +40,11 @@ public class Solver {
     }
 
     private boolean solveField(int x, int y){
-        for (int v =1; v<10; v++){
+        List<Integer> values = IntStream.range(FIRST_VALUE,LAST_VALUE).boxed().collect(toList());
+        Random rnd = new Random();
+        do{
+          int index = rnd.nextInt(values.size());
+          int v = values.remove(index);
             if(possibleFill(x, y, v)){
                 backtrackSudokuBoard.getSudokuBoard().get(x).getSudokuRows().get(y).setValue(v);
                 if (solveBoard()){
@@ -38,7 +52,7 @@ public class Solver {
                 }
                 backtrackSudokuBoard.getSudokuBoard().get(x).getSudokuRows().get(y).setValue(SudokuElement.EMPTY);
             }
-        }
+        } while (!values.isEmpty());
         return false;
     }
 
@@ -47,10 +61,10 @@ public class Solver {
     }
 
     private boolean possibleInUnit(int x, int y, int value){
-        int startX = x-x%3;
-        int startY = y-y%3;
-        for (int i = 0; i<3; i++){
-            for (int j=0; j<3;j++){
+        int startX = x-x%UNIT_INDEX;
+        int startY = y-y%UNIT_INDEX;
+        for (int i = 0; i<UNIT_INDEX; i++){
+            for (int j=0; j<UNIT_INDEX;j++){
                 if(backtrackSudokuBoard.getSudokuBoard().get(startX+i).getSudokuRows().get(startY+j).getValue()==value)
                 {
                     return false;
@@ -61,7 +75,7 @@ public class Solver {
     }
 
     private boolean possibleInLine(int x, int y, int value){
-        for (int i =0; i<9; i++){
+        for (int i =0; i<LAST_INDEX; i++){
             if (
                     backtrackSudokuBoard.getSudokuBoard().get(i).getSudokuRows().get(y).getValue() == value ||
                             backtrackSudokuBoard.getSudokuBoard().get(x).getSudokuRows().get(i).getValue() == value

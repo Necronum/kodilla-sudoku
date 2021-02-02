@@ -1,12 +1,9 @@
 package sudoku;
 
-import java.util.Arrays;
 import java.util.List;
-import java.util.Scanner;
 
 public class SudokuGame {
     private final SudokuBoard board = new SudokuBoard();
-    private final Scanner scanner = new Scanner(System.in);
 
     public boolean resolve(){
         board.createBoard();
@@ -16,7 +13,7 @@ public class SudokuGame {
     }
 
     private void fillSudoku(){
-        System.out.println("Welcome to SUDOKU");
+        IOService.welcome();
         System.out.println(board);
         List<String> inputList = IOService.getInput();
         for(String input: inputList){
@@ -27,16 +24,13 @@ public class SudokuGame {
     }
 
     private void solveSudoku(){
-        do{
-            System.out.println("Write \"SUDOKU\" to get a solution");
-        } while (!scanner.nextLine().equals("SUDOKU"));
-
+        IOService.sudokuSolveQuestion();
         try {
-            Solver solver = new Solver(board);
+            Solver solver = new Solver(board.deepCopy());
             SudokuBoard result = solver.solve();
             System.out.println(result);
         } catch (CloneNotSupportedException e){
-            System.out.println(Arrays.toString(e.getStackTrace()));
+            IOService.cloneBoardError();
         }
     }
 }

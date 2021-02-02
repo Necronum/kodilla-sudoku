@@ -7,9 +7,6 @@ import java.util.Scanner;
 public class IOService {
     private static final Scanner scanner = new Scanner(System.in);
 
-    public IOService() {
-    }
-
     public static List<String> getInput(){
         List<String> listOfInput = new ArrayList<>();
         System.out.println("Please insert Your input in format \"xyz\" example 123");
@@ -34,5 +31,19 @@ public class IOService {
             text = scanner.nextLine();
         }
         return text;
+    }
+
+    public static void welcome(){
+        System.out.println("Welcome to SUDOKU");
+    }
+
+    public static void sudokuSolveQuestion(){
+        do{
+            System.out.println("Write \"SUDOKU\" to get a solution");
+        } while (!scanner.nextLine().equals("SUDOKU"));
+    }
+
+    public static void cloneBoardError(){
+        System.out.println("Unable to clone board");
     }
 }
